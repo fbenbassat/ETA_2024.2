@@ -5,12 +5,12 @@ from pages.ProductsPage import ProductsPage
 
 
 def pytest_addoption(parser):
-    parser.addoption('--browser', default='chrome')
+    parser.addoption('--browser_selenium', default='chrome')
 
 
 @pytest.fixture
 def open_sauce_demo(request):
-    selected_browser = request.config.getoption('browser').lower()
+    selected_browser = request.config.getoption('browser_selenium').lower()
     login_page = LoginPage(browser=selected_browser)
     login_page.open_page()
     yield login_page
