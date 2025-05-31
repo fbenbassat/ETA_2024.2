@@ -1,8 +1,11 @@
+import pytest
+
 
 class Test1:
 
-    def test_click_login_button(self, open_sauce_demo):
-        login_page = open_sauce_demo
+    @pytest.mark.parametrize('all_browser', ['chrome', 'edge', 'firefox'])
+    def test_click_login_button(self, run_all_browser):
+        login_page = run_all_browser
         login_page.click_login_button()
         assert login_page.is_url_login(), 'Página requerida não encontrada!'
-        assert login_page.has_login_error_message(), 'Mensagem de erro não exibida!'
+        assert login_page.get_login_error_message() == login_page.text_login_msg_error, 'Mensagem de erro não incorreta!'

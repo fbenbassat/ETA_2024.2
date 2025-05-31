@@ -1,24 +1,35 @@
 import pytest
 
 from pages.LoginPage import LoginPage
+from pages.ProductsPage import ProductsPage
 
-url_products = 'https://www.saucedemo.com/inventory.html'
+
+def pytest_addoption(parser):
+    parser.addoption('--browser', default='chrome')
 
 
 @pytest.fixture
-def open_sauce_demo():
-    login_page = LoginPage()
+def open_sauce_demo(request):
+    selected_browser = request.config.getoption('browser').lower()
+    login_page = LoginPage(browser=selected_browser)
     login_page.open_page()
     yield login_page
     login_page.close()
 
 
-# @pytest.fixture
-# def login_sauce_demo(open_sauce_demo):
-#     driver = open_sauce_demo
-#     if driver.current_url == url_home:
-#         driver.find_element(By.ID, 'user-name').send_keys('standard_user')
-#         driver.find_element(By.ID, 'password').send_keys('secret_sauce')
-#         driver.find_element(By.ID, 'login-button').click()
-#     assert driver.current_url == url_products, 'Página de produtos não encontrada!'
-#     yield driver
+@pytest.fixture
+def run_all_browser(all_browser):
+    login_page = LoginPage(browser=all_browser)
+    login_page.open_page()
+    yield login_page
+    login_page.close()
+
+
+@pytest.fixture
+def login_sauce_demo(open_sauce_demo):
+    login_page = open_sauce_demo
+    if login_page.is_url_login():
+        login_page.efetuar_login()
+    products_page = ProductsPage(login_page.driver)
+    assert products_page.is_url_products(), 'Página de produtos não encontrada!'
+    yield products_page, login_page

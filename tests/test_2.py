@@ -1,17 +1,15 @@
-import time
+import pytest
 
-from selenium.webdriver.common.by import By
-
-from tests.conftest import url_products
+from pages.ProductsPage import ProductsPage
 
 
 class Test2:
 
-    def test_login_sauce_demo(self, open_sauce_demo):
-        driver = open_sauce_demo
-        driver.find_element(By.ID, 'user-name').send_keys('standard_user')
-        driver.find_element(By.ID, 'password').send_keys('secret_sauce')
-        driver.find_element(By.ID, 'login-button').click()
+    @pytest.mark.parametrize('all_browser', ['chrome', 'edge'])
+    def test_login_sauce_demo(self, run_all_browser):
+        login_page = run_all_browser
+        login_page.efetuar_login()
 
-        assert driver.current_url == url_products, 'Página de produtos não encontrada!'
-        assert driver.find_element(By.CLASS_NAME, 'title').text == 'Products', 'Título products não encontrado!'
+        products_page = ProductsPage(login_page.driver)
+        assert products_page.is_url_products(), 'Página de produtos não encontrada!'
+        assert products_page.get_title_page() == products_page.text_title_page, 'Título products não encontrado!'
