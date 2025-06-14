@@ -33,3 +33,10 @@ def login_sauce_demo(open_sauce_demo):
     products_page = ProductsPage(login_page.driver)
     assert products_page.is_url_products(), 'Página de produtos não encontrada!'
     yield products_page, login_page
+
+
+@pytest.fixture
+def add_product(login_sauce_demo):
+    products_page, login_page = login_sauce_demo
+    products_page.add_product_to_cart()
+

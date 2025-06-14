@@ -11,7 +11,7 @@ class BasePage:
             if browser == 'chrome':
                 options = Options()
                 options.add_argument("--incognito")
-                options.add_argument("--headless")
+                # options.add_argument("--headless")
                 self.driver = webdriver.Chrome(options=options)
             elif browser == 'firefox':
                 self.driver = webdriver.Firefox()
